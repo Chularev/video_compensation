@@ -4,4 +4,10 @@ CONFIG -= app_bundle
 CONFIG -= qt
 
 SOURCES += \
+        filereader.cpp \
+        frame.cpp \
         main.cpp
+
+HEADERS += \
+    filereader.h \
+    frame.h
