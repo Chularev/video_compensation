@@ -10,7 +10,7 @@
 class FileReader
 {
 public:
-    FileReader(const std::string &fullPath, int frameWidth, int frameHeight);
+    FileReader(const std::string &fullPath);
     virtual ~FileReader();
 
     bool open();
@@ -18,9 +18,6 @@ public:
 private:
     std::string filePath_;
     std::ifstream file_;
-
-    int frameWidth_;
-    int frameHeight_;
 };
 
 #endif // FILEREADER_H
