@@ -1,7 +1,7 @@
 #include "frame.h"
 
-Frame::Frame(const std::vector<char> &data, int width, int height, int index)
-    : data_(data), width_(width), height_(height), index_(index)
+Frame::Frame(const std::vector<char> &data, int index)
+    : data_(data), index_(index)
 {
 
 }
