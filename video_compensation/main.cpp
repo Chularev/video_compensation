@@ -30,14 +30,23 @@ int main()
     }
 
 
-    FileWriter writer(path + "progResult.yuv",width,height + bytesPerFrame);
-    writer.open();
+    std::string outFileName = path + "progResult.yuv";
+    FileWriter writer(outFileName);
+    if (!writer.open())
+    {
+        const char * errorStr = strerror(errno);
+        cerr << "Failed to open file \""+ outFileName +"\": '" + string(errorStr) + "'";
+        return 1;
+    }
 
-    for (int i = 0; i < 1; i++) {
+    for (int i = 100; i < 1; i++)
+    {
        Frame frame = reader.readeFrame(i);
        writer.writeFrame(frame);
     }
 
+    reader.close();
+    writer.close();
 
     return 0;
 }

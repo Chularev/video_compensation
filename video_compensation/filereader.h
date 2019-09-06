@@ -14,6 +14,8 @@ public:
     virtual ~FileReader();
 
     bool open();
+    void close();
+
     Frame readeFrame(int index);
 private:
     std::string filePath_;
