@@ -6,16 +6,13 @@
 class Frame
 {
 public:
-    Frame(const std::vector<char> &data,int width,
-          int height, int index);
+    Frame(const std::vector<char> &data, int index);
     int index() const;
 
     std::vector<char> data() const;
 
 private:
     std::vector<char> data_;
-    int width_;
-    int height_;
     int index_;
 };
 

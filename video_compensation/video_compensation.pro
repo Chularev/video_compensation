@@ -12,4 +12,5 @@ SOURCES += \
 HEADERS += \
     filereader.h \
     filewriter.h \
-    frame.h
+    frame.h \
+    frameinfo.h
