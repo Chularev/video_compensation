@@ -14,7 +14,8 @@ FileReader::FileReader(const std::string &fullPath)
 
 FileReader::~FileReader()
 {
-    file_.close();
+    if (file_.is_open())
+      file_.close();
 }
 
 bool FileReader::open()
@@ -23,6 +24,12 @@ bool FileReader::open()
     if (!file_.is_open() || !file_.good())
       return false;
     return true;
+}
+
+void FileReader::close()
+{
+    if (file_.is_open())
+      file_.close();
 }
 
 Frame FileReader::readeFrame(int index)

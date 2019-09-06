@@ -10,17 +10,15 @@
 class FileWriter
 {
 public:
-    FileWriter(const std::string &fullPath, int frameWidth, int frameHeight);
-    //virtual ~FileWriter();
+    FileWriter(const std::string &fullPath);
+    virtual ~FileWriter();
 
     bool open();
+    void close();
     void writeFrame(const Frame &frame);
 private:
     std::string filePath_;
     std::ofstream file_;
-
-    int frameWidth_;
-    int frameHeight_;
 };
 
 #endif // FILEWRITER_H

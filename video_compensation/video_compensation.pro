@@ -7,6 +7,7 @@ SOURCES += \
         filereader.cpp \
         filewriter.cpp \
         frame.cpp \
+        frameinfo.cpp \
         main.cpp
 
 HEADERS += \
