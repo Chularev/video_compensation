@@ -10,10 +10,10 @@
 class FileWriter
 {
 public:
-    FileWriter(const std::string &fullPath);
+    explicit FileWriter(const std::string &fullPath);
     virtual ~FileWriter();
 
-    bool open();
+    void open();
     void close();
     void writeFrame(const Frame &frame);
 private:

@@ -3,7 +3,6 @@
 #include <frameinfo.h>
 
 #include <iostream>
-#include <string.h>
 
 using namespace std;
 
@@ -20,41 +19,38 @@ int main()
     int height = 360;
     FrameInfo::init(width,height);
 
-    std::string inFileName = path + "tmpRamshta.yuv";
-    FileReader reader(inFileName);
-    if (!reader.open())
+    try
     {
-        const char * errorStr = strerror(errno);
-        cerr << "Failed to open file \""+ inFileName +"\": '" + string(errorStr) + "'";
-        return 1;
-    }
+        std::string inFileName = path + "tmpRamshta.yuv";
+        FileReader reader(inFileName);
+        reader.open();
 
 
-    std::string outFileName = path + "progResult.yuv";
-    FileWriter writer(outFileName);
-    if (!writer.open())
-    {
-        const char * errorStr = strerror(errno);
-        cerr << "Failed to open file \""+ outFileName +"\": '" + string(errorStr) + "'";
-        return 1;
-    }
+        std::string outFileName = path + "progResult.yuv";
+        FileWriter writer(outFileName);
+        writer.open();
 
-    for (int count = 0; count < 1000; count++) {
+        for (int count = 0; count < 1000; count++) {
 
-        Frame frame = reader.readeFrame(count);
-        Frame result = reader.readeFrame(count + 1);
-        for (int i = 0; i < width; i++)
-        {
-            for (int j = 0; j < height; j ++) {
-              result.setPixel(result.getPixel(i,j) - frame.getPixel(i,j));
+            Frame frame = reader.readeFrame(count);
+            Frame result = reader.readeFrame(count + 1);
+            for (int i = 0; i < width; i++)
+            {
+                for (int j = 0; j < height; j ++) {
+                    result.setPixel(result.getPixel(i,j) - frame.getPixel(i,j));
+                }
             }
+            writer.writeFrame(result);
         }
-        writer.writeFrame(result);
+
+        reader.close();
+        writer.close();
+
+        cout << "All done" << endl;
     }
-
-    reader.close();
-    writer.close();
-
-    cout << "All done" << endl;
+    catch (exception &exp) {
+        cerr << string(exp.what());
+        return 1;
+    }
     return 0;
 }

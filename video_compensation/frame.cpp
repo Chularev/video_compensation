@@ -29,32 +29,27 @@ std::vector<char> Frame::dataU() const
     return dataU_;
 }
 
-Pixel Frame::getPixel(int Xcoord, int Ycoord) const
+Pixel Frame::getPixel(int coordX, int coordY) const
 {
-    if (Xcoord < 0 || Xcoord >= FrameInfo::getWidth())
+    if (coordX < 0 || coordX >= FrameInfo::getWidth())
         throw std::out_of_range("invalid coordinate X");
 
-    if (Ycoord < 0 || Ycoord >= FrameInfo::getHeight())
+    if (coordY < 0 || coordY >= FrameInfo::getHeight())
       throw std::out_of_range("invalid coordinate Y");
 
     Pixel pixel;
-    pixel.setCoordX(Xcoord);
-    pixel.setCoordY(Ycoord);
+    pixel.setCoordX(coordX);
+    pixel.setCoordY(coordY);
 
-    size_t index = 0;
+    size_t lumaIndex = static_cast<size_t>(FrameInfo::getWidth() * coordY + coordX);
+    pixel.setY(dataY_[lumaIndex]);
+    pixel.setLumaCoord(lumaIndex);
 
-    index = static_cast<size_t>(FrameInfo::getWidth() * Ycoord + Xcoord);
-    pixel.setY(dataY_[index]);
-    pixel.setLumaCoord(index);
+    size_t chromaIndex = static_cast<size_t>((FrameInfo::getWidth() / 2) * (coordY /2) + coordX / 2);
+    pixel.setChromaCoord(chromaIndex);
 
-    index = static_cast<size_t>((FrameInfo::getWidth() / 2) * (Ycoord /2) + Xcoord / 2);
-    pixel.setChromaCoord(index);
-
-    pixel.setU(dataU_[index]);
-    pixel.setV(dataV_[index]);
-
-    pixel.setCoordX(Xcoord);
-    pixel.setCoordY(Ycoord);
+    pixel.setU(dataU_[chromaIndex]);
+    pixel.setV(dataV_[chromaIndex]);
 
     return pixel;
 }
