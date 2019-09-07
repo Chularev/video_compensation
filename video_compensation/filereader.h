@@ -10,10 +10,10 @@
 class FileReader
 {
 public:
-    FileReader(const std::string &fullPath);
+    explicit FileReader(const std::string &fullPath);
     virtual ~FileReader();
 
-    bool open();
+    void open();
     void close();
 
     Frame readeFrame(int index);

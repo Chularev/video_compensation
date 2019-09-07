@@ -33,14 +33,14 @@ public:
     Pixel operator-(const Pixel& pixel) const;
 
 private:
-    size_t lumaCoord;
-    size_t chromaCoord;
+    size_t lumaCoord_;
+    size_t chromaCoord_;
 
-    int xCoord;
-    int yCoord;
-    char Y;
-    char U;
-    char V;
+    int coordX_;
+    int coordY_;
+    char Y_;
+    char U_;
+    char V_;
 };
 
 #endif // PIXEL_H

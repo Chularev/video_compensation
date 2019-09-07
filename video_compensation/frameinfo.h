@@ -13,18 +13,18 @@ public:
 
     static int getHeight();
 
-    static int64_t getBytesPerFrame();
+    static size_t getBytesPerFrame();
 
-    static int64_t getLumaSise();
+    static size_t getLumaSise();
 
-    static int64_t getChromaSise();
+    static size_t getChromaSise();
 
 private:
     static int width;
     static int height;
-    static int64_t lumaSise;
-    static int64_t chromaSise;
-    static int64_t bytesPerFrame;
+    static size_t lumaSise;
+    static size_t chromaSise;
+    static size_t bytesPerFrame;
 };
 
 #endif // FRAMEINFO_H

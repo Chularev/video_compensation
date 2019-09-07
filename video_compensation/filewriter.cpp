@@ -1,6 +1,7 @@
 #include "filewriter.h"
 
 #include <frameinfo.h>
+#include <cstring>
 
 using namespace std;
 
@@ -12,17 +13,17 @@ FileWriter::FileWriter(const std::string &fullPath)
 
 FileWriter::~FileWriter()
 {
-    file_.close();
-
+    if (file_.is_open())
+      file_.close();
 }
 
-bool FileWriter::open()
+void FileWriter::open()
 {
 
     file_.open(filePath_, ios::binary | ios::out);
     if (!file_.is_open() || !file_.good())
-      return false;
-    return true;
+        throw ios_base::failure("Failed open file \"" + filePath_ +
+                                "\" : '" + strerror(errno) + "'");
 }
 
 void FileWriter::close()
@@ -33,7 +34,10 @@ void FileWriter::close()
 
 void FileWriter::writeFrame(const Frame &frame)
 { 
-    file_.write(frame.dataY().data(), FrameInfo::getLumaSise());
-    file_.write(frame.dataU().data(), FrameInfo::getChromaSise());
-    file_.write(frame.dataV().data(), FrameInfo::getChromaSise());
+    int64_t lumaSise = static_cast<int64_t>(FrameInfo::getLumaSise());
+    file_.write(frame.dataY().data(), lumaSise);
+
+    int64_t chromaSise = static_cast<int64_t>(FrameInfo::getChromaSise());
+    file_.write(frame.dataU().data(), chromaSise);
+    file_.write(frame.dataV().data(), chromaSise);
 }
