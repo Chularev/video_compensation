@@ -1,6 +1,8 @@
 #ifndef FRAME_H
 #define FRAME_H
 
+#include "pixel.h"
+
 #include<vector>
 
 class Frame
@@ -14,6 +16,9 @@ public:
     std::vector<char> dataV() const;
 
     std::vector<char> dataU() const;
+
+    Pixel getPixel(int coordX, int coordY) const;
+    void setPixel(const Pixel &pixel);
 
 private:
     std::vector<char> dataY_;
