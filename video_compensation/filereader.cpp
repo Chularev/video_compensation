@@ -35,15 +35,20 @@ void FileReader::close()
 Frame FileReader::readeFrame(int index)
 {
     int64_t frameSize = FrameInfo::getBytesPerFrame();
-
-    unsigned long long int bufferSize = static_cast<unsigned long long int>(frameSize);
-    std::vector<char> buffer(bufferSize);
-
     file_.seekg(frameSize * index);
-    file_.read(&buffer[0], frameSize);
 
-    Frame frame(buffer, index);
-    return frame;
+    unsigned long long int lumaSize = static_cast<unsigned long long int>(FrameInfo::getLumaSise());
+    std::vector<char> bufferY(lumaSize);
+    file_.read(&bufferY[0], FrameInfo::getLumaSise());
+
+    unsigned long long int chromaSize = static_cast<unsigned long long int>(FrameInfo::getChromaSise());
+    std::vector<char> bufferU(chromaSize);
+    file_.read(&bufferU[0], FrameInfo::getChromaSise());
+
+    std::vector<char> bufferV(chromaSize);
+    file_.read(&bufferV[0], FrameInfo::getChromaSise());
+
+    return Frame(bufferY, bufferU, bufferV, index);
 }
 
 

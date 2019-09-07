@@ -33,5 +33,7 @@ void FileWriter::close()
 
 void FileWriter::writeFrame(const Frame &frame)
 { 
-    file_.write(frame.data().data(), FrameInfo::getBytesPerFrame());
+    file_.write(frame.dataY().data(), FrameInfo::getLumaSise());
+    file_.write(frame.dataU().data(), FrameInfo::getChromaSise());
+    file_.write(frame.dataV().data(), FrameInfo::getChromaSise());
 }

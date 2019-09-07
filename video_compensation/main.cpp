@@ -11,8 +11,8 @@ int main()
 {
     cout << "Hello World!" << endl;
 
-    std::string path("D://Qt_Projekts//video_compensation//");
-    //std::string path("/home/alex/video_compensation/");
+    //std::string path("D://Qt_Projekts//video_compensation//");
+    std::string path("/home/alex/video_compensation/");
     //640x360
 
 
@@ -39,7 +39,7 @@ int main()
         return 1;
     }
 
-    for (int i = 100; i < 1; i++)
+    for (int i = 100; i < 110; i++)
     {
        Frame frame = reader.readeFrame(i);
        writer.writeFrame(frame);

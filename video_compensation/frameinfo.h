@@ -15,9 +15,15 @@ public:
 
     static int64_t getBytesPerFrame();
 
+    static int64_t getLumaSise();
+
+    static int64_t getChromaSise();
+
 private:
     static int width;
     static int height;
+    static int64_t lumaSise;
+    static int64_t chromaSise;
     static int64_t bytesPerFrame;
 };
 
