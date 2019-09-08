@@ -2,6 +2,7 @@
 
 #include <frameinfo.h>
 #include <stdexcept>
+#include <x86intrin.h>
 
 Frame::Frame(const std::vector<char> &dataY, const std::vector<char> &dataU, const std::vector<char> &dataV, int index)
     : dataY_(dataY), dataU_(dataU), dataV_(dataV),  index_(index)
@@ -66,4 +67,31 @@ void Frame::setPixel(const Pixel &pixel)
     dataY_[pixel.getLumaCoord()] = pixel.getY();
     dataU_[pixel.getChromaCoord()] = pixel.getU();
     dataV_[pixel.getChromaCoord()] = pixel.getV();
+}
+
+#include <iostream>
+
+Block Frame::getBlock(int topLeftX, int topLeftY, int side) const
+{
+    Block block(topLeftX,topLeftY,side);
+
+    size_t dst[4];
+     __m128i* dst_ptr = reinterpret_cast<__m128i*>(dst) ;
+
+     //short jjj = static_cast<short>(FrameInfo::getWidth());
+     __m128i width = _mm_set1_epi32 (FrameInfo::getWidth());
+     __m128i tmp = _mm_set1_epi32 (2);
+     __m128i res = _mm_mul_epu32(width, tmp);
+       __m128i res2 = _mm_mul_epu32(_mm_srli_si128(width,4), _mm_srli_si128(tmp,4));
+     //__m128i res = _mm_add_epi16(width, tmp);
+     _mm_store_si128(dst_ptr, res);
+     dst_ptr ++;
+     _mm_store_si128(dst_ptr , res2);
+
+     for (int i = 0; i < 4; i++)
+        std::cout << dst[i] << std::endl;
+
+    //FrameInfo::getWidth() * coordY + coordX
+
+    return block;
 }
