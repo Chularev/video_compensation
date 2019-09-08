@@ -4,6 +4,8 @@
 
 Pixel::Pixel()
 {
+    lumaCoord_ = chromaCoord_ = coordX_
+               = coordY_ = Y_ = U_ = V_ = 0;
 
 }
 
