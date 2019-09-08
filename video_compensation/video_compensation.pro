@@ -4,6 +4,7 @@ CONFIG -= app_bundle
 CONFIG -= qt
 
 SOURCES += \
+        block.cpp \
         filereader.cpp \
         filewriter.cpp \
         frame.cpp \
@@ -12,6 +13,7 @@ SOURCES += \
         pixel.cpp
 
 HEADERS += \
+    block.h \
     filereader.h \
     filewriter.h \
     frame.h \
