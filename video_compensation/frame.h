@@ -1,6 +1,7 @@
 #ifndef FRAME_H
 #define FRAME_H
 
+#include "block.h"
 #include "pixel.h"
 
 #include<vector>
@@ -19,6 +20,8 @@ public:
 
     Pixel getPixel(int coordX, int coordY) const;
     void setPixel(const Pixel &pixel);
+
+    Block getBlock(int topLeftX, int topLeftY, int side) const;
 
 private:
     std::vector<char> dataY_;
