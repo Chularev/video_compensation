@@ -30,7 +30,7 @@ public:
     size_t getLumaCoord() const;
     void setLumaCoord(const size_t &value);
 
-    Pixel operator-(const Pixel& pixel) const;
+    friend Pixel operator-(const Pixel& p1, const Pixel& p2);
 
 private:
     size_t lumaCoord_;

@@ -90,13 +90,13 @@ void Pixel::setLumaCoord(const size_t &value)
     lumaCoord_ = value;
 }
 
-Pixel Pixel::operator-(const Pixel &pixel) const
+Pixel operator-(const Pixel& p1, const Pixel& p2)
 {
-    Pixel newPixel(*this);
+    Pixel newPixel(p1);
 
-    newPixel.Y_ -= pixel.getY();
+    newPixel.Y_ -= p2.getY();
 
-    if (newPixel.Y_ <= 0)
+    if (newPixel.Y_ < 0)
         newPixel.Y_ = 0;
 
     //    newPixel.U -= pixel.getU();
