@@ -88,7 +88,7 @@ Block Frame::getBlock(int topLeftX, int topLeftY) const
        "movdqa %%xmm0, %[a]\n\t"
        :
        : [a]"m"(*a), [src]"m"(*src_cacheline)
-       : "%xmm0", "%xmm1"
+       : "%xmm0"
       );
 
      for (int i=0; i <16; i++)
