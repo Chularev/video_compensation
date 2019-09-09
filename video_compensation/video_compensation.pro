@@ -3,6 +3,9 @@ CONFIG += console c++11
 CONFIG -= app_bundle
 CONFIG -= qt
 
+QMAKE_CXXFLAGS +=-msse3
+QMAKE_CXXFLAGS +=-msse4.1
+
 SOURCES += \
         block.cpp \
         filereader.cpp \
