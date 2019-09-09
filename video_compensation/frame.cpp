@@ -122,22 +122,21 @@ Block Frame::getBlock(int topLeftX, int topLeftY) const
      for (int i =0; i < 16; i++)
            b[i]  = i;
 
-     __m128i *dst_cacheline = (__m128i *)a;
+     //__m128i *dst_cacheline = (__m128i *)a;
      __m128i *src_cacheline = (__m128i *)b;
      __m128i temp1 = _mm_stream_load_si128(src_cacheline);
-     _mm_store_si128(dst_cacheline, temp1);
-    /*
-      __asm__ volatile
+    // _mm_store_si128(dst_cacheline, temp1);
+          __asm__ volatile
       (
        "movups %[a], %%xmm0\n\t"	// поместить 4 переменные с плавающей точкой из a в регистр xmm0
        "movups %[b], %%xmm1\n\t"	// поместить 4 переменные с плавающей точкой из b в регистр xmm1
-       "movdqa %%xmm1,%%xmm0\n\t"
+       "MOVNTDQA %[src],%%xmm0\n\t"
        "movups %%xmm0, %[a]\n\t"	// выгрузить результаты из регистра xmm0 по адресам a
        :
-       : [a]"m"(*a), [b]"m"(*b)
+       : [a]"m"(*a), [b]"m"(*b), [src]"m"(*src_cacheline)
        : "%xmm0", "%xmm1"
       );
-*/
+
      for (int i=0; i <8; i++)
         std::cout << static_cast<int>(a[i]) << std:: endl;
 
