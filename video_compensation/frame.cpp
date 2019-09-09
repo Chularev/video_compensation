@@ -78,7 +78,8 @@ Block Frame::getBlock(int topLeftX, int topLeftY) const
 
     for (int i = 0; i < 16; i++)
     {
-        __m128i *src_cacheline = (__m128i *)&dataY_[FrameInfo::getWidth() *(i+ topLeftY)];
+        size_t index = static_cast<size_t>(FrameInfo::getWidth() * (i+ topLeftY));
+        __m128i *src_cacheline = reinterpret_cast<__m128i *>(const_cast<char*>(&dataY_[index]));
         __asm__ volatile
                 (
                     "movntdqa %[src],%%xmm0\n\t"
@@ -92,8 +93,8 @@ Block Frame::getBlock(int topLeftX, int topLeftY) const
     {
         for (int j=0; j <16; j++)
             if (getPixel(i,j).getY() != tmpBlock[j][i])
-            std::cout << " not brake";
+                std::cout << " not brake";
         std::cout <<  std:: endl;
-}
+    }
     return block;
 }
