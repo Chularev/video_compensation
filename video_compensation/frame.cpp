@@ -78,25 +78,21 @@ Block Frame::getBlock(int topLeftX, int topLeftY, int side) const
     size_t dst[8];
      __m128i* dst_ptr = reinterpret_cast<__m128i*>(dst) ;
 
-     int a[4] = { 3, 2, 3, 4 };
-     int b[4] = {   2, 2, 3, 4 };
+     int a[8];
+     int b[8] = { 2, 2, 3, 4,5,6,7,8 };
 
       __asm__ volatile
       (
-       "movups %[a], %%xmm0\n\t"	// поместить 4 переменные с плавающей точкой из a в регистр xmm0
-       "movups %[b], %%xmm1\n\t"	// поместить 4 переменные с плавающей точкой из b в регистр xmm1
-       "PMADDWD %%xmm1, %%xmm0\n\t"	// перемножить пакеты плавающих точек: xmm0 = xmm0 * xmm1
-                     // xmm00 = xmm00 * xmm10
-                     // xmm01 = xmm01 * xmm11
-                     // xmm02 = xmm02 * xmm12
-                     // xmm03 = xmm03 * xmm13
-       "movups %%xmm0, %[a]\n\t"	// выгрузить результаты из регистра xmm0 по адресам a
+       "vmovups %[a], %%ymm0\n\t"	// поместить 4 переменные с плавающей точкой из a в регистр xmm0
+       "vmovups %[b], %%ymm1\n\t"	// поместить 4 переменные с плавающей точкой из b в регистр xmm1
+       "VMOVDQA %%ymm1,%%ymm0\n\t"
+       "vmovups %%ymm0, %[a]\n\t"	// выгрузить результаты из регистра xmm0 по адресам a
        :
        : [a]"m"(*a), [b]"m"(*b)
-       : "%xmm0", "%xmm1"
+       : "%ymm0", "%ymm1"
       );
 
-     for (int i=0; i <4; i++)
+     for (int i=0; i <8; i++)
         std::cout << a[i] << std:: endl;
 
     return block;
