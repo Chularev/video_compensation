@@ -71,9 +71,9 @@ void Frame::setPixel(const Pixel &pixel)
 
 #include <iostream>
 
-Block Frame::getBlock(int topLeftX, int topLeftY, int side) const
+Block Frame::getBlock(int topLeftX, int topLeftY) const
 {
-    Block block(topLeftX,topLeftY,side);
+    Block block(topLeftX,topLeftY);
 
     size_t dst[8];
      __m128i* dst_ptr = reinterpret_cast<__m128i*>(dst) ;
