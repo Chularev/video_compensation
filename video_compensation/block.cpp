@@ -4,8 +4,8 @@
 
 using namespace std;
 
-Block::Block(int topLeftX, int topLeftY, int side)
-    : topLeftX_(topLeftX),topLeftY_(topLeftY), side_(side)
+Block::Block(int topLeftX, int topLeftY)
+    : topLeftX_(topLeftX),topLeftY_(topLeftY), side_(8)
 {
     size_t size = static_cast<size_t>(side_);
     matrix_ = vector<vector<Pixel>>(size, vector<Pixel>(size, Pixel()));
