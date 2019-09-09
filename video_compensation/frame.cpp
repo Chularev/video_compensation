@@ -94,7 +94,7 @@ std::cout <<"====================" <<  std:: endl;
         __m128i *src_cacheline = reinterpret_cast<__m128i *>(b[i]);
         __asm__ volatile
                 (
-                    "MOVNTDQA %[src],%%xmm0\n\t"
+                    "movntdqa %[src],%%xmm0\n\t"
                     "movdqa %%xmm0, %[a]\n\t"
                     :
                     : [a]"m"(a[i]), [src]"m"(*src_cacheline )
