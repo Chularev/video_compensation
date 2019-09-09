@@ -74,21 +74,8 @@ Block Frame::getBlock(int topLeftX, int topLeftY) const
 {
     Block block(topLeftX,topLeftY);
 
-    char a[16][16];
-    char b[16][16];
-    for (int i =0; i < 16; i++)
-        for (int j =0; j<16; j++)
-            b[i][j]  = i+j;
+    char tmpBlock[16][16];
 
-    //__m128i *dst_cacheline = (__m128i *)a;
-
-    for (int i=0; i <16; i++)
-    {
-        for (int j=0; j <16; j++)
-            std::cout << static_cast<int>(b[i][j]) << " ";
-        std::cout <<  std:: endl;
-}
-std::cout <<"====================" <<  std:: endl;
     for (int i = 0; i < 16; i++)
     {
         __m128i *src_cacheline = (__m128i *)&dataY_[FrameInfo::getWidth() *(i+ topLeftY)];
@@ -97,14 +84,14 @@ std::cout <<"====================" <<  std:: endl;
                     "movntdqa %[src],%%xmm0\n\t"
                     "movdqa %%xmm0, %[a]\n\t"
                     :
-                    : [a]"m"(a[i]), [src]"m"(*src_cacheline )
+                    : [a]"m"(tmpBlock[i]), [src]"m"(*src_cacheline )
                     : "%xmm0"
                     );
     }
     for (int i=0; i <16; i++)
     {
         for (int j=0; j <16; j++)
-            if (getPixel(i,j).getY() != a[j][i])
+            if (getPixel(i,j).getY() != tmpBlock[j][i])
             std::cout << " not brake";
         std::cout <<  std:: endl;
 }
