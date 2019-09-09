@@ -75,25 +75,24 @@ Block Frame::getBlock(int topLeftX, int topLeftY) const
 {
     Block block(topLeftX,topLeftY);
 
-    size_t dst[8];
-     __m128i* dst_ptr = reinterpret_cast<__m128i*>(dst) ;
-
-     int a[8];
-     int b[8] = { 2, 2, 3, 4,5,6,7,8 };
+    char a[8];
+    char b[8];
+     for (int i =0; i < 8; i++)
+           b[i]  = i;
 
       __asm__ volatile
       (
-       "vmovups %[a], %%ymm0\n\t"	// поместить 4 переменные с плавающей точкой из a в регистр xmm0
-       "vmovups %[b], %%ymm1\n\t"	// поместить 4 переменные с плавающей точкой из b в регистр xmm1
-       "VMOVDQA %%ymm1,%%ymm0\n\t"
-       "vmovups %%ymm0, %[a]\n\t"	// выгрузить результаты из регистра xmm0 по адресам a
+       "movups %[a], %%xmm0\n\t"	// поместить 4 переменные с плавающей точкой из a в регистр xmm0
+       "movups %[b], %%xmm1\n\t"	// поместить 4 переменные с плавающей точкой из b в регистр xmm1
+       "movdqa %%xmm1,%%xmm0\n\t"
+       "movups %%xmm0, %[a]\n\t"	// выгрузить результаты из регистра xmm0 по адресам a
        :
        : [a]"m"(*a), [b]"m"(*b)
-       : "%ymm0", "%ymm1"
+       : "%xmm0", "%xmm1"
       );
 
      for (int i=0; i <8; i++)
-        std::cout << a[i] << std:: endl;
+        std::cout << static_cast<int>(a[i]) << std:: endl;
 
     return block;
 }
