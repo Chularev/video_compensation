@@ -73,6 +73,22 @@ void Frame::setPixel(const Pixel &pixel)
 Block Frame::getBlock(int topLeftX, int topLeftY) const
 {
     Block block(topLeftX,topLeftY);
+    if (topLeftX < 0 || topLeftX + block.side() >= FrameInfo::getWidth())
+        throw std::out_of_range("Invalid argument x");
+
+    if (topLeftY < 0 || topLeftY + block.side() >= FrameInfo::getHeight())
+        throw std::out_of_range("Invalid argument y");
+
+    for (int i = 0; i < block.side(); i++)
+        for (int j = 0; j < block.side(); j++)
+            block(i,j) = getPixel(i,j);
+
+    return block;
+}
+/*
+Block Frame::getBlock(int topLeftX, int topLeftY) const
+{
+    Block block(topLeftX,topLeftY);
 
     char tmpBlock[16][16];
 
@@ -98,3 +114,4 @@ Block Frame::getBlock(int topLeftX, int topLeftY) const
     }
     return block;
 }
+*/
