@@ -7,7 +7,7 @@
 class Block
 {
 public:
-    Block(int topLeftX, int topLeftY, int side);
+    Block(int topLeftX, int topLeftY);
     int side() const;
 
     int topLeftX() const;
