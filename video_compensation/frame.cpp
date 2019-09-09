@@ -70,49 +70,6 @@ void Frame::setPixel(const Pixel &pixel)
     dataV_[pixel.getChromaCoord()] = pixel.getV();
 }
 
-void _mesa_streaming_load_memcpy(void *__restrict  dst, void *__restrict  src, size_t len)
-{
-   char *__restrict d = (char*) dst;
-   char *__restrict s = (char*) src;
-   /* If dst and src are not co-aligned, fallback to memcpy(). */
-   if (((uintptr_t)d & 15) != ((uintptr_t)s & 15)) {
-      memcpy(d, s, len);
-      return;
-   }
-   /* memcpy() the misaligned header. At the end of this if block, <d> and <s>
-    * are aligned to a 16-byte boundary or <len> == 0.
-    */
-   if ((uintptr_t)d & 15) {
-      uintptr_t bytes_before_alignment_boundary = 16 - ((uintptr_t)d & 15);
-      //assert(bytes_before_alignment_boundary < 16);
-  //    memcpy(d, s, MIN2(bytes_before_alignment_boundary, len));
-//      d = (char *)ALIGN((uintptr_t)d, 16);
-//      s = (char *)ALIGN((uintptr_t)s, 16);
-//      len -= MIN2(bytes_before_alignment_boundary, len);
-   }
-   if (len >= 64)
-      _mm_mfence();
-   while (len >= 64) {
-      __m128i *dst_cacheline = (__m128i *)d;
-      __m128i *src_cacheline = (__m128i *)s;
-      __m128i temp1 = _mm_stream_load_si128(src_cacheline + 0);
-      __m128i temp2 = _mm_stream_load_si128(src_cacheline + 1);
-      __m128i temp3 = _mm_stream_load_si128(src_cacheline + 2);
-      __m128i temp4 = _mm_stream_load_si128(src_cacheline + 3);
-      _mm_store_si128(dst_cacheline + 0, temp1);
-      _mm_store_si128(dst_cacheline + 1, temp2);
-      _mm_store_si128(dst_cacheline + 2, temp3);
-      _mm_store_si128(dst_cacheline + 3, temp4);
-      d += 64;
-      s += 64;
-      len -= 64;
-   }
-   /* memcpy() the tail. */
-   if (len) {
-      memcpy(d, s, len);
-   }
-}
-
 Block Frame::getBlock(int topLeftX, int topLeftY) const
 {
     Block block(topLeftX,topLeftY);
@@ -127,16 +84,14 @@ Block Frame::getBlock(int topLeftX, int topLeftY) const
 
      __asm__ volatile
       (
-       "movups %[a], %%xmm0\n\t"	// поместить 4 переменные с плавающей точкой из a в регистр xmm0
-       "movups %[b], %%xmm1\n\t"	// поместить 4 переменные с плавающей точкой из b в регистр xmm1
        "MOVNTDQA %[src],%%xmm0\n\t"
-       "movdqa %%xmm0, %[a]\n\t"	// выгрузить результаты из регистра xmm0 по адресам a
+       "movdqa %%xmm0, %[a]\n\t"
        :
-       : [a]"m"(*a), [b]"m"(*b), [src]"m"(*src_cacheline)
+       : [a]"m"(*a), [src]"m"(*src_cacheline)
        : "%xmm0", "%xmm1"
       );
 
-     for (int i=0; i <8; i++)
+     for (int i=0; i <16; i++)
         std::cout << static_cast<int>(a[i]) << std:: endl;
 
     return block;
