@@ -30,18 +30,21 @@ int main()
         FileWriter writer(outFileName);
         writer.open();
 
-        for (int count = 0; count < 1000; count++) {
+        Frame frame = reader.readeFrame(0);
+        frame.getBlock(0,0);
 
-            Frame frame = reader.readeFrame(count);
-            Frame result = reader.readeFrame(count + 1);
-            for (int i = 0; i < width; i++)
-            {
-                for (int j = 0; j < height; j ++) {
-                    result.setPixel(result.getPixel(i,j) - frame.getPixel(i,j));
-                }
-            }
-            writer.writeFrame(result);
-        }
+//        for (int count = 0; count < 1000; count++) {
+
+//            Frame frame = reader.readeFrame(count);
+//            Frame result = reader.readeFrame(count + 1);
+//            for (int i = 0; i < width; i++)
+//            {
+//                for (int j = 0; j < height; j ++) {
+//                    result.setPixel(result.getPixel(i,j) - frame.getPixel(i,j));
+//                }
+//            }
+//            writer.writeFrame(result);
+//        }
 
         reader.close();
         writer.close();
@@ -50,7 +53,7 @@ int main()
     }
     catch (exception &exp) {
         cerr << string(exp.what());
-        return 1;
+        exit(1);
     }
     return 0;
 }
