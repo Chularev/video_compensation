@@ -124,14 +124,13 @@ Block Frame::getBlock(int topLeftX, int topLeftY) const
 
      //__m128i *dst_cacheline = (__m128i *)a;
      __m128i *src_cacheline = (__m128i *)b;
-     __m128i temp1 = _mm_stream_load_si128(src_cacheline);
-    // _mm_store_si128(dst_cacheline, temp1);
-          __asm__ volatile
+
+     __asm__ volatile
       (
        "movups %[a], %%xmm0\n\t"	// поместить 4 переменные с плавающей точкой из a в регистр xmm0
        "movups %[b], %%xmm1\n\t"	// поместить 4 переменные с плавающей точкой из b в регистр xmm1
        "MOVNTDQA %[src],%%xmm0\n\t"
-       "movups %%xmm0, %[a]\n\t"	// выгрузить результаты из регистра xmm0 по адресам a
+       "movdqa %%xmm0, %[a]\n\t"	// выгрузить результаты из регистра xmm0 по адресам a
        :
        : [a]"m"(*a), [b]"m"(*b), [src]"m"(*src_cacheline)
        : "%xmm0", "%xmm1"
