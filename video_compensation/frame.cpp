@@ -37,7 +37,7 @@ Pixel Frame::getPixel(int coordX, int coordY) const
         throw std::out_of_range("invalid coordinate X");
 
     if (coordY < 0 || coordY >= FrameInfo::getHeight())
-      throw std::out_of_range("invalid coordinate Y");
+        throw std::out_of_range("invalid coordinate Y");
 
     Pixel pixel;
     pixel.setCoordX(coordX);
@@ -63,7 +63,7 @@ void Frame::setPixel(const Pixel &pixel)
         throw std::out_of_range("invalid coordinate X");
 
     if (pixel.getCoordY() < 0 || pixel.getCoordY() >= FrameInfo::getHeight())
-      throw std::out_of_range("invalid coordinate Y");
+        throw std::out_of_range("invalid coordinate Y");
 
     dataY_[pixel.getLumaCoord()] = pixel.getY();
     dataU_[pixel.getChromaCoord()] = pixel.getU();
@@ -74,25 +74,38 @@ Block Frame::getBlock(int topLeftX, int topLeftY) const
 {
     Block block(topLeftX,topLeftY);
 
-    char a[16];
-    char b[16];
-     for (int i =0; i < 16; i++)
-           b[i]  = i;
+    char a[16][16];
+    char b[16][16];
+    for (int i =0; i < 16; i++)
+        for (int j =0; j<16; j++)
+            b[i][j]  = i+j;
 
-     //__m128i *dst_cacheline = (__m128i *)a;
-     __m128i *src_cacheline = (__m128i *)b;
+    //__m128i *dst_cacheline = (__m128i *)a;
 
-     __asm__ volatile
-      (
-       "MOVNTDQA %[src],%%xmm0\n\t"
-       "movdqa %%xmm0, %[a]\n\t"
-       :
-       : [a]"m"(*a), [src]"m"(*src_cacheline)
-       : "%xmm0"
-      );
-
-     for (int i=0; i <16; i++)
-        std::cout << static_cast<int>(a[i]) << std:: endl;
-
+    for (int i=0; i <16; i++)
+    {
+        for (int j=0; j <16; j++)
+            std::cout << static_cast<int>(b[i][j]) << " ";
+        std::cout <<  std:: endl;
+}
+std::cout <<"====================" <<  std:: endl;
+    for (int i = 0; i < 16; i++)
+    {
+        __m128i *src_cacheline = reinterpret_cast<__m128i *>(b[i]);
+        __asm__ volatile
+                (
+                    "MOVNTDQA %[src],%%xmm0\n\t"
+                    "movdqa %%xmm0, %[a]\n\t"
+                    :
+                    : [a]"m"(a[i]), [src]"m"(*src_cacheline )
+                    : "%xmm0"
+                    );
+    }
+    for (int i=0; i <16; i++)
+    {
+        for (int j=0; j <16; j++)
+            std::cout << static_cast<int>(a[i][j]) << " ";
+        std::cout <<  std:: endl;
+}
     return block;
 }
