@@ -21,7 +21,7 @@ public:
     Pixel getPixel(int coordX, int coordY) const;
     void setPixel(const Pixel &pixel);
 
-    Block getBlock(int topLeftX, int topLeftY, int side) const;
+    Block getBlock(int topLeftX, int topLeftY) const;
 
 private:
     std::vector<char> dataY_;
