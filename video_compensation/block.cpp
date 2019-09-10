@@ -4,7 +4,7 @@
 
 using namespace std;
 
-int Block::side_ = 16;
+int Block::side_ = 8;
 
 Block::Block(int topLeftX, int topLeftY)
     : topLeftX_(topLeftX),topLeftY_(topLeftY)
@@ -40,7 +40,7 @@ Pixel &Block::operator()(int row, int col)
     return matrix_[static_cast<size_t>(row)][static_cast<size_t>(col)];
 }
 
-const Pixel &Block::operator()(int row, int col) const
+Pixel Block::operator()(int row, int col) const
 {
 
     if (row < 0 || row >= side_)
@@ -50,4 +50,14 @@ const Pixel &Block::operator()(int row, int col) const
         throw out_of_range("col more or less the block height");
 
     return matrix_[static_cast<size_t>(row)][static_cast<size_t>(col)];
+}
+
+Block operator-(const Block &block1, const Block &block2)
+{
+    Block result(block1.topLeftX(),block1.topLeftY());
+    for (int i = 0; i < result.side(); i++)
+        for (int j = 0; j < result.side(); j++)
+            result(i,j) = block1(i,j) - block2(i,j);
+
+    return result;
 }
