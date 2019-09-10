@@ -1,6 +1,7 @@
-﻿#include <filereader.h>
-#include <filewriter.h>
-#include <frameinfo.h>
+﻿#include "filereader.h"
+#include "filewriter.h"
+#include "frameinfo.h"
+#include "videocompensation.h"
 
 #include <iostream>
 
@@ -30,21 +31,18 @@ int main()
         FileWriter writer(outFileName);
         writer.open();
 
-        Frame frame = reader.readeFrame(0);
-        frame.getBlock(0,0);
 
-//        for (int count = 0; count < 1000; count++) {
+        VideoCompensation handler(1);
+        for (int count = 0; count < 100; count++)
+        {
+            Frame currentFrame = reader.readeFrame(count);
+            Frame previousFrame = reader.readeFrame(count + 1);
+            MotionVectorsMap vectorMap = handler.findMotionVectors(currentFrame,previousFrame);
+            Frame result = handler.doCompensation(currentFrame,previousFrame,vectorMap);
+            writer.writeFrame(result);
 
-//            Frame frame = reader.readeFrame(count);
-//            Frame result = reader.readeFrame(count + 1);
-//            for (int i = 0; i < width; i++)
-//            {
-//                for (int j = 0; j < height; j ++) {
-//                    result.setPixel(result.getPixel(i,j) - frame.getPixel(i,j));
-//                }
-//            }
-//            writer.writeFrame(result);
-//        }
+            cout << "   Frame number = " << result.index();
+        }
 
         reader.close();
         writer.close();
