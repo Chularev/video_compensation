@@ -39,9 +39,6 @@ Frame VideoCompensation::doCompensation(const Frame &currentFrame, const Frame &
             int x = i + motionVectorsMap[i][j]["x"];
             int y = j + motionVectorsMap[i][j]["y"];
 
-            if (motionVectorsMap[i][j]["x"]   == 0 )
-            std::cout << "x = " << motionVectorsMap[i][j]["x"] << "y = " << motionVectorsMap[i][j]["y"];
-
             Block previous = previousFrame.getBlock(x,y);
             Block resultBlock = current - previous;
             result.setBlock(resultBlock);
