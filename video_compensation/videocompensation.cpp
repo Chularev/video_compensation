@@ -2,7 +2,7 @@
 
 #include <frameinfo.h>
 #include <stdexcept>
-
+#include <iostream>
 
 VideoCompensation::VideoCompensation(int searchAreaInBlocks)
     : searchAreaInBlocks_(searchAreaInBlocks)
@@ -27,6 +27,34 @@ MotionVectorsMap VideoCompensation::findMotionVectors(const Frame &currentFrame,
     return result;
 }
 
+Frame VideoCompensation::doCompensation(const Frame &currentFrame, const Frame &previousFrame, MotionVectorsMap &motionVectorsMap) const
+{
+    Frame result(currentFrame);
+    for (int i = 0; i < FrameInfo::getWidth(); i += Block::side())
+    {
+        for (int j = 0; j < FrameInfo::getHeight(); j += Block::side())
+        {
+            Block current = currentFrame.getBlock(i,j);
+
+            int x = i;// + motionVectorsMap[i][j]["x"];
+            int y = j;// + motionVectorsMap[i][j]["x"];
+            Block previous = previousFrame.getBlock(x,y);
+
+           // Block blockResult = current - previous;
+            for(int w = 0; w < previous.side(); w++)
+                for(int h = 0; h < previous.side(); h++)
+                {
+                   // std::cout << (int) (current(w,h) - previous(w,h)).getY() << "    ";
+
+                    result.setPixel(current(w,h) - previous(w,h));
+                }
+          //  result.setBlock(blockResult);
+        }
+    }
+    return  result;
+
+}
+
 MotionVector VideoCompensation::findVector(const Block &block, const Frame &previousFrame)
 {
 
@@ -45,7 +73,7 @@ MotionVector VideoCompensation::findVector(const Block &block, const Frame &prev
         for (int j = 0; j < searchAreaInBlocks_ * 2 + 1; j++)
         {
             int currentX = posX + block.side() * j;
-            if (!isCoordinateValide(currentX,posY))
+            if (!isCoordinateValide(currentX, posY, block.side()))
                 continue;
 
             if (currentX == 0 && posY == 0)
@@ -54,8 +82,10 @@ MotionVector VideoCompensation::findVector(const Block &block, const Frame &prev
             int tmpSad = SAD(block, previousFrame.getBlock(currentX, posY));
             if (tmpSad < sad)
             {
-                result["x"] = currentX;
-                result["y"] = posY;
+                result["x"] = currentX - block.topLeftX();
+                result["y"] = posY     - block.topLeftY();
+                if (sad == 0)
+                    return result;
             }
         }
     }
@@ -63,9 +93,14 @@ MotionVector VideoCompensation::findVector(const Block &block, const Frame &prev
     return result;
 }
 
-bool VideoCompensation::isCoordinateValide(int x, int y) const
+bool VideoCompensation::isCoordinateValide(int x, int y, int blockSide) const
 {
-    return x < FrameInfo::getWidth() && y < FrameInfo::getHeight();
+    if (x < 0 || x + blockSide >= FrameInfo::getWidth())
+        return false;
+
+    if (y < 0 || y + blockSide >= FrameInfo::getHeight())
+        return false;
+    return true;
 }
 
 int VideoCompensation::SAD(const Block &block1, const Block &block2) const
