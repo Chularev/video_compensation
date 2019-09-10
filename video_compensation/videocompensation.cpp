@@ -29,26 +29,22 @@ MotionVectorsMap VideoCompensation::findMotionVectors(const Frame &currentFrame,
 
 Frame VideoCompensation::doCompensation(const Frame &currentFrame, const Frame &previousFrame, MotionVectorsMap &motionVectorsMap) const
 {
-    Frame result(currentFrame);
+    Frame result(currentFrame.index());
     for (int i = 0; i < FrameInfo::getWidth(); i += Block::side())
     {
         for (int j = 0; j < FrameInfo::getHeight(); j += Block::side())
         {
             Block current = currentFrame.getBlock(i,j);
 
-            int x = i;// + motionVectorsMap[i][j]["x"];
-            int y = j;// + motionVectorsMap[i][j]["x"];
+            int x = i + motionVectorsMap[i][j]["x"];
+            int y = j + motionVectorsMap[i][j]["y"];
+
+            if (motionVectorsMap[i][j]["x"]   == 0 )
+            std::cout << "x = " << motionVectorsMap[i][j]["x"] << "y = " << motionVectorsMap[i][j]["y"];
+
             Block previous = previousFrame.getBlock(x,y);
-
-           // Block blockResult = current - previous;
-            for(int w = 0; w < previous.side(); w++)
-                for(int h = 0; h < previous.side(); h++)
-                {
-                   // std::cout << (int) (current(w,h) - previous(w,h)).getY() << "    ";
-
-                    result.setPixel(current(w,h) - previous(w,h));
-                }
-          //  result.setBlock(blockResult);
+            Block resultBlock = current - previous;
+            result.setBlock(resultBlock);
         }
     }
     return  result;
@@ -69,7 +65,6 @@ MotionVector VideoCompensation::findVector(const Block &block, const Frame &prev
 
     for (int i = 0; i < searchAreaInBlocks_ * 2 + 1; i++)
     {
-        posY += i * block.side();
         for (int j = 0; j < searchAreaInBlocks_ * 2 + 1; j++)
         {
             int currentX = posX + block.side() * j;
@@ -87,6 +82,7 @@ MotionVector VideoCompensation::findVector(const Block &block, const Frame &prev
                 if (sad == 0)
                     return result;
             }
+            posY += i * block.side();
         }
     }
 
