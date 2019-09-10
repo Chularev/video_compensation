@@ -4,17 +4,20 @@
 
 using namespace std;
 
+int Block::side_ = 16;
+
 Block::Block(int topLeftX, int topLeftY)
-    : topLeftX_(topLeftX),topLeftY_(topLeftY), side_(16)
+    : topLeftX_(topLeftX),topLeftY_(topLeftY)
 {
     size_t size = static_cast<size_t>(side_);
     matrix_ = vector<vector<Pixel>>(size, vector<Pixel>(size, Pixel()));
 }
 
-int Block::side() const
+int Block::side()
 {
     return side_;
 }
+
 
 int Block::topLeftX() const
 {

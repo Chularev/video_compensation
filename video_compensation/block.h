@@ -8,7 +8,7 @@ class Block
 {
 public:
     Block(int topLeftX, int topLeftY);
-    int side() const;
+    static int side();
 
     int topLeftX() const;
 
@@ -19,7 +19,7 @@ public:
 private:
     int topLeftX_;
     int topLeftY_;
-    int side_;
+    static int side_;
     std::vector<std::vector<Pixel>> matrix_;
 };
 
