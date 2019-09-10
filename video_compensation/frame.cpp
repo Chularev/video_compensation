@@ -11,6 +11,14 @@ Frame::Frame(const std::vector<char> &dataY, const std::vector<char> &dataU, con
 
 }
 
+Frame::Frame(int index)
+    : index_(index)
+{
+    dataY_ = std::vector<char>(FrameInfo::getLumaSise());
+    dataU_ = std::vector<char>(FrameInfo::getChromaSise());
+    dataV_ = std::vector<char>(FrameInfo::getChromaSise());
+}
+
 int Frame::index() const
 {
     return index_;
@@ -73,17 +81,24 @@ void Frame::setPixel(const Pixel &pixel)
 Block Frame::getBlock(int topLeftX, int topLeftY) const
 {
     Block block(topLeftX,topLeftY);
-    if (topLeftX < 0 || topLeftX + block.side() >= FrameInfo::getWidth())
+    if (topLeftX < 0 || topLeftX + block.side() > FrameInfo::getWidth())
         throw std::out_of_range("Invalid argument x");
 
-    if (topLeftY < 0 || topLeftY + block.side() >= FrameInfo::getHeight())
+    if (topLeftY < 0 || topLeftY + block.side() > FrameInfo::getHeight())
         throw std::out_of_range("Invalid argument y");
 
     for (int i = 0; i < block.side(); i++)
         for (int j = 0; j < block.side(); j++)
-            block(i,j) = getPixel(i,j);
+            block(i,j) = getPixel(i + topLeftX,j + topLeftY);
 
     return block;
+}
+
+void Frame::setBlock(const Block &block)
+{
+    for (int i = 0; i < block.side(); i++)
+        for(int j = 0; j < block.side(); j++)
+            setPixel(block(i,j));
 }
 /*
 Block Frame::getBlock(int topLeftX, int topLeftY) const
