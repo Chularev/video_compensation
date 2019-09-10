@@ -14,22 +14,42 @@ void VideoCompensation::findMotionVector(const Frame &currentFrame, const Frame 
     {
         for (int j = 0; j < FrameInfo::getHeight(); j += Block::side())
         {
-            Block from = currentFrame.getBlock(i,j);
+            Block block = currentFrame.getBlock(i,j);
         }
 
     }
 }
 
-MotionVector VideoCompensation::findVector(const Block &block, const Frame &frame1)
+MotionVector VideoCompensation::findVector(const Block &block, const Frame &previousFrame)
 {
 
-    int sad = SAD(block, frame1.getBlock(block.topLeftX(), block.topLeftY()));
-    MotionVector resunt;
-    for (int i = 0; i < 9; i++)
-    {
+    int sad = SAD(block, previousFrame.getBlock(block.topLeftX(), block.topLeftY()));
 
+    int areaX = 1;
+    int areaY = 1;
+
+    int offsetX = 0;
+    int offsetY = 0;
+
+    int posX = block.topLeftX() - block.side() * areaX;
+    int posY = block.topLeftY() - block.side() * areaY;
+
+    for (int i = 0; i < areaX * 2 + 1; i++)
+    {
+        posY += i * block.side();
+        for (int j = 0; j < areaY  * 2 + 1; j++)
+        {
+            int posXInBlock = posX + block.side() * j;
+            int tmpSad = SAD(block, previousFrame.getBlock(posXInBlock, posY));
+            if (tmpSad < sad)
+            {
+                offsetX = posXInBlock;
+                offsetY = posY;
+            }
+        }
     }
 
+    return MotionVector();
 }
 
 int VideoCompensation::SAD(const Block &block1, const Block &block2) const
