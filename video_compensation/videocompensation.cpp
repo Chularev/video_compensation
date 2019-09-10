@@ -27,7 +27,7 @@ MotionVectorsMap VideoCompensation::findMotionVectors(const Frame &currentFrame,
     return result;
 }
 
-Frame VideoCompensation::doCompensation(const Frame &currentFrame, const Frame &previousFrame, MotionVectorsMap &motionVectorsMap) const
+Frame VideoCompensation::doCompensation(const Frame &currentFrame, const Frame &previousFrame, MotionVectorsMap &offset) const
 {
     Frame result(currentFrame.index());
     for (int i = 0; i < FrameInfo::getWidth(); i += Block::side())
@@ -35,11 +35,7 @@ Frame VideoCompensation::doCompensation(const Frame &currentFrame, const Frame &
         for (int j = 0; j < FrameInfo::getHeight(); j += Block::side())
         {
             Block current = currentFrame.getBlock(i,j);
-
-            int x = i + motionVectorsMap[i][j]["x"];
-            int y = j + motionVectorsMap[i][j]["y"];
-
-            Block previous = previousFrame.getBlock(x,y);
+            Block previous = previousFrame.getBlock(i + offset[i][j]["x"], j + offset[i][j]["y"]);
             Block resultBlock = current - previous;
             result.setBlock(resultBlock);
         }
@@ -48,7 +44,7 @@ Frame VideoCompensation::doCompensation(const Frame &currentFrame, const Frame &
 
 }
 
-MotionVector VideoCompensation::findVector(const Block &block, const Frame &previousFrame)
+MotionVector VideoCompensation::findVector(const Block &block, const Frame &previousFrame) const
 {
 
     int sad = SAD(block, previousFrame.getBlock( block.topLeftX(), block.topLeftY()));
