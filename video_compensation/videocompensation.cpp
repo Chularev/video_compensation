@@ -1,7 +1,8 @@
 #include "videocompensation.h"
 
 #include <frameinfo.h>
-#include  <stdexcept>
+#include <stdexcept>
+
 
 VideoCompensation::VideoCompensation(int searchAreaInBlocks)
     : searchAreaInBlocks_(searchAreaInBlocks)
@@ -9,19 +10,21 @@ VideoCompensation::VideoCompensation(int searchAreaInBlocks)
 
 }
 
-void VideoCompensation::findMotionVector(const Frame &currentFrame, const Frame &previousFrame)
+MotionVectorsMap VideoCompensation::findMotionVectors(const Frame &currentFrame, const Frame &previousFrame)
 {
     if (searchAreaInBlocks_ < 1)
         throw std::invalid_argument("Search area can't be less than 1");
 
+    MotionVectorsMap result;
     for (int i = 0; i < FrameInfo::getWidth(); i += Block::side())
     {
         for (int j = 0; j < FrameInfo::getHeight(); j += Block::side())
         {
             Block block = currentFrame.getBlock(i,j);
+            result[i][j] = findVector(block, previousFrame);
         }
-
     }
+    return result;
 }
 
 MotionVector VideoCompensation::findVector(const Block &block, const Frame &previousFrame)
@@ -29,8 +32,9 @@ MotionVector VideoCompensation::findVector(const Block &block, const Frame &prev
 
     int sad = SAD(block, previousFrame.getBlock( block.topLeftX(), block.topLeftY()));
 
-    int offsetX = 0;
-    int offsetY = 0;
+    MotionVector result;
+    result["x"] = 0;
+    result["y"] = 0;
 
     int posX = block.topLeftX() - block.side() * searchAreaInBlocks_;
     int posY = block.topLeftY() - block.side() * searchAreaInBlocks_;
@@ -50,13 +54,13 @@ MotionVector VideoCompensation::findVector(const Block &block, const Frame &prev
             int tmpSad = SAD(block, previousFrame.getBlock(currentX, posY));
             if (tmpSad < sad)
             {
-                offsetX = currentX;
-                offsetY = posY;
+                result["x"] = currentX;
+                result["y"] = posY;
             }
         }
     }
 
-    return MotionVector();
+    return result;
 }
 
 bool VideoCompensation::isCoordinateValide(int x, int y) const
