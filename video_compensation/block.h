@@ -15,7 +15,8 @@ public:
     int topLeftY() const;
 
     Pixel& operator()(int row, int col);
-    const Pixel& operator()(int row, int col) const;
+    Pixel operator()(int row, int col) const;
+    friend Block operator- (const Block &block1, const Block &block2);
 private:
     int topLeftX_;
     int topLeftY_;
