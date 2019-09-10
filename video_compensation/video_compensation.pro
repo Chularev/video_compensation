@@ -13,7 +13,9 @@ SOURCES += \
         frame.cpp \
         frameinfo.cpp \
         main.cpp \
-        pixel.cpp
+        motionvector.cpp \
+        pixel.cpp \
+        videocompensation.cpp
 
 HEADERS += \
     block.h \
@@ -21,4 +23,6 @@ HEADERS += \
     filewriter.h \
     frame.h \
     frameinfo.h \
-    pixel.h
+    motionvector.h \
+    pixel.h \
+    videocompensation.h
