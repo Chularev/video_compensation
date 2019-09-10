@@ -10,6 +10,8 @@ class Frame
 {
 public:
     Frame(const std::vector<char> &dataY, const std::vector<char> &dataU, const std::vector<char> &dataV, int index);
+    Frame(int index);
+
     int index() const;
 
     std::vector<char> dataY() const;
@@ -22,6 +24,7 @@ public:
     void setPixel(const Pixel &pixel);
 
     Block getBlock(int topLeftX, int topLeftY) const;
+    void setBlock(const Block &block);
 
 private:
     std::vector<char> dataY_;
