@@ -109,7 +109,7 @@ Block Frame::getBlock(int topLeftX, int topLeftY) const
     {
         for (int j=0; j <16; j++)
             if (getPixel(i,j).getY() != tmpBlock[j][i])
-                std::cout << " not brake";
+                std::cout << "not";
         std::cout <<  std:: endl;
     }
     return block;
