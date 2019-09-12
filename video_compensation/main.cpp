@@ -33,10 +33,10 @@ int main()
 
 
         VideoCompensation handler(1);
-        for (int count = 0; count < 100; count++)
+        for (int count = 0; count < 151; count++)
         {
-            Frame currentFrame = reader.readeFrame(count);
-            Frame previousFrame = reader.readeFrame(count + 1);
+            Frame previousFrame = reader.readeFrame(count);
+            Frame currentFrame = reader.readeFrame(count + 1);
             MotionVectorsMap vectorMap = handler.findMotionVectors(currentFrame,previousFrame);
             Frame result = handler.doCompensation(currentFrame,previousFrame,vectorMap);
             writer.writeFrame(result);
