@@ -3,6 +3,8 @@
 #include <frameinfo.h>
 #include <stdexcept>
 #include <iostream>
+#include <thread>
+
 
 VideoCompensation::VideoCompensation(int searchAreaInBlocks, int threadsCount)
     : searchAreaInBlocks_(searchAreaInBlocks), threadsCount_(threadsCount)
@@ -15,18 +17,28 @@ MotionVectorsMap VideoCompensation::findMotionVectors(const Frame &currentFrame,
     if (searchAreaInBlocks_ < 1)
         throw std::invalid_argument("Search area can't be less than 1");
 
-    doVectorSearch(currentFrame,previousFrame,0);
+    if (threadsCount_ < 1)
+        throw std::invalid_argument("Threads count can't be less than 1");
+
+    std::vector<std::thread> threads(static_cast<size_t>(threadsCount_));
+    for (size_t i = 0; i < threadsCount_; i++)
+    {
+        threads[i] = std::thread(&VideoCompensation::doVectorSearch, this, std::ref(currentFrame), std::ref(previousFrame),i);
+        if (threads[i].joinable())
+            threads[i].join();
+    }
+
     return result;
 }
 
 void VideoCompensation::doVectorSearch(const Frame &currentFrame, const Frame &previousFrame, int threadNumber)
 {
-    for (int i = 0; i < FrameInfo::getWidth() -  Block::side() + 1; i += Block::side())
+    for (int y = Block::side() * threadNumber; y < FrameInfo::getHeight() -  Block::side() + 1; y += Block::side() * threadsCount_)
     {
-        for (int j = 0; j < FrameInfo::getHeight() -  Block::side() + 1; j += Block::side())
+        for (int x = 0; x < FrameInfo::getWidth() -  Block::side() + 1; x += Block::side())
         {
-            Block block = currentFrame.getBlock(i,j);
-            result[i][j] = findVector(block, previousFrame);
+            Block block = currentFrame.getBlock(x,y);
+            result[x][y] = findVector(block, previousFrame);
         }
     }
 }
