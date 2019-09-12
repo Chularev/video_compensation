@@ -4,8 +4,8 @@
 #include <stdexcept>
 #include <iostream>
 
-VideoCompensation::VideoCompensation(int searchAreaInBlocks)
-    : searchAreaInBlocks_(searchAreaInBlocks)
+VideoCompensation::VideoCompensation(int searchAreaInBlocks, int threadsCount)
+    : searchAreaInBlocks_(searchAreaInBlocks), threadsCount_(threadsCount)
 {
 
 }
@@ -15,7 +15,12 @@ MotionVectorsMap VideoCompensation::findMotionVectors(const Frame &currentFrame,
     if (searchAreaInBlocks_ < 1)
         throw std::invalid_argument("Search area can't be less than 1");
 
-    MotionVectorsMap result;
+    doVectorSearch(currentFrame,previousFrame,0);
+    return result;
+}
+
+void VideoCompensation::doVectorSearch(const Frame &currentFrame, const Frame &previousFrame, int threadNumber)
+{
     for (int i = 0; i < FrameInfo::getWidth() -  Block::side() + 1; i += Block::side())
     {
         for (int j = 0; j < FrameInfo::getHeight() -  Block::side() + 1; j += Block::side())
@@ -24,7 +29,6 @@ MotionVectorsMap VideoCompensation::findMotionVectors(const Frame &currentFrame,
             result[i][j] = findVector(block, previousFrame);
         }
     }
-    return result;
 }
 
 Frame VideoCompensation::doCompensation(const Frame &currentFrame, const Frame &previousFrame, MotionVectorsMap &offset) const

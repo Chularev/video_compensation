@@ -10,14 +10,18 @@ using MotionVectorsMap = std::map<int, std::map<int, MotionVector >>;
 class VideoCompensation
 {
 public:
-    VideoCompensation(int searchAreaInBlocks = 1);
+    VideoCompensation(int searchAreaInBlocks = 1, int threadsCount = 4);
     MotionVectorsMap findMotionVectors(const Frame &currentFrame, const Frame &previousFrame);
     Frame doCompensation(const Frame &currentFrame, const Frame &previousFrame, MotionVectorsMap &motionVectorsMap) const;
 private:
+    void doVectorSearch(const Frame &currentFrame, const Frame &previousFrame, int threadNumber);
     int SAD(const Block &block1, const Block &block2) const;
     MotionVector findVector(const Block &block, const Frame &frame) const;
     bool isCoordinateValide(int x, int y, int blockSide)const;
     int searchAreaInBlocks_;
+    int threadsCount_;
+
+    MotionVectorsMap result;
 };
 
 #endif // VIDEOCOMPENSATION_H
