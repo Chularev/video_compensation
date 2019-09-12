@@ -20,8 +20,9 @@ MotionVectorsMap VideoCompensation::findMotionVectors(const Frame &currentFrame,
     if (threadsCount_ < 1)
         throw std::invalid_argument("Threads count can't be less than 1");
 
-    std::vector<std::thread> threads(static_cast<size_t>(threadsCount_));
-    for (size_t i = 0; i < threadsCount_; i++)
+    size_t threadsCount = static_cast<size_t>(threadsCount_);
+    std::vector<std::thread> threads(threadsCount);
+    for (size_t i = 0; i < threadsCount; i++)
     {
         threads[i] = std::thread(&VideoCompensation::doVectorSearch, this, std::ref(currentFrame), std::ref(previousFrame),i);
         if (threads[i].joinable())
