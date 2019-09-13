@@ -8,6 +8,7 @@ class Pixel
 public:
     Pixel();
     Pixel(const Pixel &pixel);
+    Pixel& operator=(const Pixel &pixel);
 
     int getCoordX() const;
     void setCoordX(int value);

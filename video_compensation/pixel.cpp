@@ -21,6 +21,19 @@ Pixel::Pixel(const Pixel &pixel)
     V_ = pixel.V_;
 }
 
+Pixel &Pixel::operator=(const Pixel &pixel)
+{
+    lumaCoord_   = pixel.lumaCoord_;
+    chromaCoord_ = pixel.chromaCoord_;
+
+    coordX_ = pixel.coordX_;
+    coordY_ = pixel.coordY_;
+    Y_ = pixel.Y_;
+    U_ = pixel.U_;
+    V_ = pixel.V_;
+    return *this;
+}
+
 
 int Pixel::getCoordX() const
 {

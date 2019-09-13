@@ -12,6 +12,21 @@ VideoCompensation::VideoCompensation(int searchAreaInBlocks, int threadsCount)
 
 }
 
+VideoCompensation::VideoCompensation(const VideoCompensation &videoCompensation)
+{
+    searchAreaInBlocks_ = videoCompensation.searchAreaInBlocks_;
+    threadsCount_ = videoCompensation.threadsCount_;
+    result_ = videoCompensation.result_;
+}
+
+VideoCompensation &VideoCompensation::operator=(const VideoCompensation &videoCompensation)
+{
+    searchAreaInBlocks_ = videoCompensation.searchAreaInBlocks_;
+    threadsCount_ = videoCompensation.threadsCount_;
+    result_ = videoCompensation.result_;
+    return *this;
+}
+
 MotionVectorsMap VideoCompensation::findMotionVectors(const Frame &currentFrame, const Frame &previousFrame)
 {
     if (searchAreaInBlocks_ < 1)
@@ -29,7 +44,7 @@ MotionVectorsMap VideoCompensation::findMotionVectors(const Frame &currentFrame,
             threads[i].join();
     }
 
-    return result;
+    return result_;
 }
 
 void VideoCompensation::doVectorSearch(const Frame &currentFrame, const Frame &previousFrame, int threadNumber)
@@ -39,7 +54,7 @@ void VideoCompensation::doVectorSearch(const Frame &currentFrame, const Frame &p
         for (int x = 0; x < FrameInfo::getWidth() -  Block::side() + 1; x += Block::side())
         {
             Block block = currentFrame.getBlock(x,y);
-            result[x][y] = findVector(block, previousFrame);
+            result_[x][y] = findVector(block, previousFrame);
         }
     }
 }
