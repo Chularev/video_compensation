@@ -11,6 +11,8 @@ class Frame
 public:
     Frame(const std::vector<char> &dataY, const std::vector<char> &dataU, const std::vector<char> &dataV, int index);
     Frame(int index);
+    Frame(const Frame &frame);
+    Frame &operator=(const Frame &frame);
 
     int index() const;
 

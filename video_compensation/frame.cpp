@@ -19,6 +19,23 @@ Frame::Frame(int index)
     dataV_ = std::vector<char>(FrameInfo::getChromaSise());
 }
 
+Frame::Frame(const Frame &frame)
+{
+    index_ = frame.index_;
+    dataY_ = frame.dataY_;
+    dataU_ = frame.dataU_;
+    dataV_ = frame.dataV_;
+}
+
+Frame &Frame::operator=(const Frame &frame)
+{
+    index_ = frame.index_;
+    dataY_ = frame.dataY_;
+    dataU_ = frame.dataU_;
+    dataV_ = frame.dataV_;
+    return *this;
+}
+
 int Frame::index() const
 {
     return index_;
