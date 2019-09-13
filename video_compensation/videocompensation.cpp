@@ -4,7 +4,7 @@
 #include <stdexcept>
 #include <iostream>
 #include <thread>
-
+#include <cmath>
 
 VideoCompensation::VideoCompensation(int searchAreaInBlocks, int threadsCount)
     : searchAreaInBlocks_(searchAreaInBlocks), threadsCount_(threadsCount)
@@ -79,37 +79,82 @@ Frame VideoCompensation::doCompensation(const Frame &currentFrame, const Frame &
 MotionVector VideoCompensation::findVector(const Block &block, const Frame &previousFrame) const
 {
 
-    int sad = SAD(block, previousFrame.getBlock( block.topLeftX(), block.topLeftY()));
+    short sad = SAD(block, previousFrame.getBlock( block.topLeftX(), block.topLeftY()));
+
+    short sadStart = sad;
+    std::vector<short> sadVector(8, static_cast<short>(pow(2,16) - 1));
+    size_t sadIndex = 0;
 
     MotionVector result;
-    result["x"] = 0;
-    result["y"] = 0;
+    MotionVector asmResult;
+    result["x"] = asmResult["x"] = 0;
+    result["y"] = asmResult["y"] =0;
 
-    int posX = block.topLeftX() - block.side() * searchAreaInBlocks_;
-    int posY = block.topLeftY() - block.side() * searchAreaInBlocks_;
 
-    for (int i = 0; i < searchAreaInBlocks_ * 2 + 1; i++)
+    int offsetY = block.side() * -1;
+
+    for (int i = 0; i < searchAreaInBlocks_ * 2 + 1; i++, offsetY += block.side())
     {
-        for (int j = 0; j < searchAreaInBlocks_ * 2 + 1; j++)
+        int offsetX = block.side() * -1;
+        int currentY = block.topLeftY() + offsetY;
+
+        for (int j = 0; j < searchAreaInBlocks_ * 2 + 1; j++, offsetX +=  block.side())
         {
-            int currentX = posX + block.side() * j;
-            if (!isCoordinateValide(currentX, posY, block.side()))
-                continue;
+            int currentX = block.topLeftX() + offsetX;
 
-            if (currentX == 0 && posY == 0)
+            if (!isCoordinateValide(currentX, currentY, block.side()))
+            {
+                ++sadIndex;
                 continue;
+            }
 
-            int tmpSad = SAD(block, previousFrame.getBlock(currentX, posY));
+            short tmpSad = SAD(block, previousFrame.getBlock(currentX, currentY));
+            if (offsetX == 0 && offsetY == 0)
+            {
+            }
+            else
+            sadVector[sadIndex++] = tmpSad;
+
             if (tmpSad < sad)
             {
-                result["x"] = currentX - block.topLeftX();
-                result["y"] = posY     - block.topLeftY();
-                if (sad == 0)
-                    return result;
+                sad = tmpSad;
+                result["x"] = offsetX;
+                result["y"] = offsetY;
+//                if (sad == 0)
+//                    return result;
             }
-            posY += i * block.side();
         }
     }
+
+    short minSad[8];
+
+    __asm__ volatile
+            (
+                "movdqa %[sadVector],%%xmm0\n\t"
+                "PHMINPOSUW %%xmm0, %%xmm0\n\t"
+                "movdqa %%xmm0, %[minSad]\n\t"
+                :
+                : [sadVector]"m"(sadVector[0]),[minSad]"m"(minSad)
+                : "%xmm0","%xmm1"
+                );
+    if (sadStart <= minSad[0])
+        return asmResult;
+
+    if (minSad[1] < 3)
+        asmResult["y"] = Block::side() * -1;
+    else if (minSad[1] > 4)
+        asmResult["y"] = Block::side();
+
+    if (minSad[1] == 0 || minSad[1] == 3 || minSad[1] == 5)
+        asmResult["x"] = Block::side() * -1;
+
+    if (minSad[1] == 2 || minSad[1] == 4 || minSad[1] == 7)
+        asmResult["x"] = Block::side();
+
+    if (asmResult["x"] != result["x"] || asmResult["y"] != result["y"])
+        std::cout << "Error " << asmResult["x"] <<" " << result["x"] << " " << asmResult["y"] << result["y"];
+
+
 
     return result;
 }
