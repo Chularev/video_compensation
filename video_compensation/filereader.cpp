@@ -8,7 +8,7 @@
 using namespace std;
 
 FileReader::FileReader(const std::string &fullPath)
-    : filePath_(fullPath)
+    : filePath_(fullPath), index_(0)
 {
 
 }
@@ -30,14 +30,24 @@ void FileReader::open()
 void FileReader::close()
 {
     if (file_.is_open())
-      file_.close();
+        file_.close();
+}
+
+bool FileReader::eof() const
+{
+    return file_.eof();
 }
 
 Frame FileReader::readeFrame(int index)
 {
     int64_t frameSize = static_cast<int64_t>(FrameInfo::getBytesPerFrame());
     file_.seekg(frameSize * index);
+    index_ = index;
+    return readeNext();
+}
 
+Frame FileReader::readeNext()
+{
     std::vector<char> bufferY(FrameInfo::getLumaSise());
     int64_t lumaSize = static_cast<int64_t>(FrameInfo::getLumaSise());
     file_.read(&bufferY[0], lumaSize);
@@ -49,7 +59,7 @@ Frame FileReader::readeFrame(int index)
     std::vector<char> bufferV(FrameInfo::getChromaSise());
     file_.read(&bufferV[0], chromaSize);
 
-    return Frame(bufferY, bufferU, bufferV, index);
+    return Frame(bufferY, bufferU, bufferV, index_++);
 }
 
 
