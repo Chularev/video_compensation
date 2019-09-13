@@ -124,9 +124,9 @@ bool VideoCompensation::isCoordinateValide(int x, int y, int blockSide) const
     return true;
 }
 
-int VideoCompensation::SAD(const Block &block1, const Block &block2) const
+short VideoCompensation::SAD(const Block &block1, const Block &block2) const
 {
-    int result = 0;
+    short result = 0;
     for (int i = 0; i < block1.side(); i++)
         for (int j = 0; j < block1.side(); j++)
             result += std::abs(block2(i,j).getY() - block1(i,j).getY());
