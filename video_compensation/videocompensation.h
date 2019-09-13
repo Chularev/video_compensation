@@ -10,7 +10,7 @@ using MotionVectorsMap = std::map<int, std::map<int, MotionVector >>;
 class VideoCompensation
 {
 public:
-    VideoCompensation(int searchAreaInBlocks = 1, int threadsCount = 4);
+    VideoCompensation(int threadsCount = 4);
     VideoCompensation(const VideoCompensation &videoCompensation);
     VideoCompensation& operator=(const VideoCompensation &videoCompensation);
 
@@ -22,7 +22,6 @@ private:
     MotionVector findVector(const Block &block, const Frame &frame) const;
     bool isCoordinateValide(int x, int y, int blockSide)const;
 
-    int searchAreaInBlocks_;
     int threadsCount_;
     MotionVectorsMap result_;
 };
