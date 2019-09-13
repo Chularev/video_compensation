@@ -18,7 +18,7 @@ public:
     Frame doCompensation(const Frame &currentFrame, const Frame &previousFrame, MotionVectorsMap &motionVectorsMap) const;
 private:
     void doVectorSearch(const Frame &currentFrame, const Frame &previousFrame, int threadNumber);
-    int SAD(const Block &block1, const Block &block2) const;
+    short SAD(const Block &block1, const Block &block2) const;
     MotionVector findVector(const Block &block, const Frame &frame) const;
     bool isCoordinateValide(int x, int y, int blockSide)const;
 
