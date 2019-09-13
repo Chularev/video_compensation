@@ -15,11 +15,14 @@ public:
 
     void open();
     void close();
+    bool eof() const;
 
     Frame readeFrame(int index);
+    Frame readeNext();
 private:
     std::string filePath_;
     std::ifstream file_;
+    int index_;
 };
 
 #endif // FILEREADER_H
