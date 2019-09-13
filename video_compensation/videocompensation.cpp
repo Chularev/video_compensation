@@ -6,22 +6,20 @@
 #include <thread>
 #include <cmath>
 
-VideoCompensation::VideoCompensation(int searchAreaInBlocks, int threadsCount)
-    : searchAreaInBlocks_(searchAreaInBlocks), threadsCount_(threadsCount)
+VideoCompensation::VideoCompensation(int threadsCount)
+    : threadsCount_(threadsCount)
 {
 
 }
 
 VideoCompensation::VideoCompensation(const VideoCompensation &videoCompensation)
 {
-    searchAreaInBlocks_ = videoCompensation.searchAreaInBlocks_;
     threadsCount_ = videoCompensation.threadsCount_;
     result_ = videoCompensation.result_;
 }
 
 VideoCompensation &VideoCompensation::operator=(const VideoCompensation &videoCompensation)
 {
-    searchAreaInBlocks_ = videoCompensation.searchAreaInBlocks_;
     threadsCount_ = videoCompensation.threadsCount_;
     result_ = videoCompensation.result_;
     return *this;
@@ -29,9 +27,6 @@ VideoCompensation &VideoCompensation::operator=(const VideoCompensation &videoCo
 
 MotionVectorsMap VideoCompensation::findMotionVectors(const Frame &currentFrame, const Frame &previousFrame)
 {
-    if (searchAreaInBlocks_ < 1)
-        throw std::invalid_argument("Search area can't be less than 1");
-
     if (threadsCount_ < 1)
         throw std::invalid_argument("Threads count can't be less than 1");
 
@@ -86,19 +81,15 @@ MotionVector VideoCompensation::findVector(const Block &block, const Frame &prev
     size_t sadIndex = 0;
 
     MotionVector result;
-    MotionVector asmResult;
-    result["x"] = asmResult["x"] = 0;
-    result["y"] = asmResult["y"] =0;
+    result["x"] = 0;
+    result["y"] = 0;
 
 
     int offsetY = block.side() * -1;
-
-    for (int i = 0; i < searchAreaInBlocks_ * 2 + 1; i++, offsetY += block.side())
+    for (int i = 0; i < 3; i++, offsetY += block.side())
     {
-        int offsetX = block.side() * -1;
         int currentY = block.topLeftY() + offsetY;
-
-        for (int j = 0; j < searchAreaInBlocks_ * 2 + 1; j++, offsetX +=  block.side())
+        for (int j = 0, offsetX = block.side() * -1; j < 3; j++, offsetX +=  block.side())
         {
             int currentX = block.topLeftX() + offsetX;
 
@@ -107,22 +98,10 @@ MotionVector VideoCompensation::findVector(const Block &block, const Frame &prev
                 ++sadIndex;
                 continue;
             }
-
-            short tmpSad = SAD(block, previousFrame.getBlock(currentX, currentY));
             if (offsetX == 0 && offsetY == 0)
-            {
-            }
-            else
-            sadVector[sadIndex++] = tmpSad;
+                continue;
 
-            if (tmpSad < sad)
-            {
-                sad = tmpSad;
-                result["x"] = offsetX;
-                result["y"] = offsetY;
-//                if (sad == 0)
-//                    return result;
-            }
+            sadVector[sadIndex++] = SAD(block, previousFrame.getBlock(currentX, currentY));
         }
     }
 
@@ -138,23 +117,18 @@ MotionVector VideoCompensation::findVector(const Block &block, const Frame &prev
                 : "%xmm0","%xmm1"
                 );
     if (sadStart <= minSad[0])
-        return asmResult;
+        return result;
 
     if (minSad[1] < 3)
-        asmResult["y"] = Block::side() * -1;
+        result["y"] = Block::side() * -1;
     else if (minSad[1] > 4)
-        asmResult["y"] = Block::side();
+        result["y"] = Block::side();
 
     if (minSad[1] == 0 || minSad[1] == 3 || minSad[1] == 5)
-        asmResult["x"] = Block::side() * -1;
+        result["x"] = Block::side() * -1;
 
     if (minSad[1] == 2 || minSad[1] == 4 || minSad[1] == 7)
-        asmResult["x"] = Block::side();
-
-    if (asmResult["x"] != result["x"] || asmResult["y"] != result["y"])
-        std::cout << "Error " << asmResult["x"] <<" " << result["x"] << " " << asmResult["y"] << result["y"];
-
-
+        result["x"] = Block::side();
 
     return result;
 }
