@@ -55,7 +55,7 @@ int main(int argc, char *argv[])
         writer.open();
 
 
-        VideoCompensation handler(1);
+        VideoCompensation handler;
 
         Frame currentFrame(0);
         if (!reader.eof())
