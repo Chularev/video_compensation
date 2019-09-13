@@ -7,28 +7,52 @@
 
 using namespace std;
 
-int main()
+int main(int argc, char *argv[])
 {
-    cout << "Hello World!" << endl;
+    // -pathInput D://Qt_Projekts//video_compensation//tmpRamshta.yuv
+    //-w 640 -h 360
+    //-pathOutput D://Qt_Projekts//video_compensation//progResult.yuv
+
 
     std::string path("D://Qt_Projekts//video_compensation//");
     //std::string path("/home/alex/video_compensation/");
     //640x360
 
 
-    int width = 640;
-    int height = 360;
-    FrameInfo::init(width,height);
-
     try
     {
-        std::string inFileName = path + "tmpRamshta.yuv";
-        FileReader reader(inFileName);
+        if (argc != 9)
+            throw std::invalid_argument("Invalid argument count."
+                                        " It must be -pathInput, -w, -h, -pathOutput");
+
+        std::map<std::string, std::string> params;
+
+        for (int count = 1; count < argc; count += 2)
+            params[argv[count]] = argv[count + 1];
+
+        if (params.find("-w") == params.end())
+            throw std::invalid_argument("Param -w (frame width) is not existing");
+
+
+        if (params.find("-h") == params.end())
+            throw std::invalid_argument("Param -h (frame height) is not existing");
+
+
+        int width  = std::stoi(params["-w"]);
+        int height = std::stoi(params["-h"]);
+        FrameInfo::init(width, height);
+
+        if (params.find("-pathInput") == params.end())
+            throw std::invalid_argument("Param -pathInput is not existing");
+
+        FileReader reader(params["-pathInput"]);
         reader.open();
 
 
-        std::string outFileName = path + "progResult.yuv";
-        FileWriter writer(outFileName);
+        if (params.find("-pathOutput") == params.end())
+            throw std::invalid_argument("Param -pathOutput is not existing");
+
+        FileWriter writer(params["-pathOutput"]);
         writer.open();
 
 
@@ -49,9 +73,16 @@ int main()
 
         cout << "All done" << endl;
     }
-    catch (exception &exp) {
+    catch (exception &exp)
+    {
         cerr << string(exp.what());
-        exit(1);
+        return 1;
     }
+    catch(...)
+    {
+        cerr << "Unknown exception";
+        return 1;
+    }
+
     return 0;
 }
