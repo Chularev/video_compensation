@@ -33,9 +33,10 @@ MotionVectorsMap VideoCompensation::findMotionVectors(const Frame &currentFrame,
     size_t threadsCount = static_cast<size_t>(threadsCount_);
     std::vector<std::thread> threads(threadsCount);
     for (size_t i = 0; i < threadsCount; i++)
-    {
         threads[i] = std::thread(&VideoCompensation::doVectorSearch, this, std::ref(currentFrame), std::ref(previousFrame),i);
-        if (threads[i].joinable())
+    for (size_t i = 0; i < threadsCount; i++)
+    {
+         if (threads[i].joinable())
             threads[i].join();
     }
 
