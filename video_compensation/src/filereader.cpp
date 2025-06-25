@@ -10,7 +10,7 @@ using namespace std;
 FileReader::FileReader(const std::string &fullPath)
     : filePath_(fullPath), index_(0)
 {
-
+    open();
 }
 
 FileReader::~FileReader()
