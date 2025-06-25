@@ -38,13 +38,6 @@ bool FileReader::eof() const
     return file_.eof();
 }
 
-Frame FileReader::readeFrame(int index)
-{
-    int64_t frameSize = static_cast<int64_t>(FrameInfo::getBytesPerFrame());
-    file_.seekg(frameSize * index);
-    index_ = index;
-    return readeNext();
-}
 
 Frame FileReader::readeNext()
 {

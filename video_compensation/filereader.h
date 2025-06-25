@@ -16,8 +16,6 @@ public:
     void open();
     void close();
     bool eof() const;
-
-    Frame readeFrame(int index);
     Frame readeNext();
 private:
     std::string filePath_;
