@@ -18,10 +18,10 @@ BENCHMARK(BM_old);
 
 
 static void BM_new(benchmark::State& state) {
-  FileReader reader("/home/alex/workspace/projects/video_compensation/video_compensation/run/Good_dog.mp4");
-  
+//  FileReader reader("/home/alex/workspace/projects/video_compensation/video_compensation/run/Good_dog.mp4");
+  int a,b;
   for (auto _ : state)
-    reader.readeNext();
+    a + b;
 }
 
 BENCHMARK(BM_new);
