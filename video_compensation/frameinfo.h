@@ -2,6 +2,7 @@
 #define FRAMEINFO_H
 
 #include <cstdint>
+#include <cstddef>  
 
 class FrameInfo
 {
