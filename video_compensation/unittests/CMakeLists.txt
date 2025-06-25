@@ -12,19 +12,16 @@ include_directories(${GTEST_INCLUDE_DIRS})
 # Link runTests with what we want to test and the GTest and pthread library
 add_library(gtests_src STATIC
     tests.cpp
-    tests.h
-    resources.h
-    resources.cpp
-    programmtest.h programmtest.cpp)
+    tests.h)
 target_include_directories(gtests_src PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}
-    "${CMAKE_SOURCE_DIR}/my_var/src"
+    "${CMAKE_SOURCE_DIR}/src"
 )
 add_executable(gtests main.cpp)
 
 target_link_libraries(gtests ${GTEST_LIBRARIES} pthread)
 
-target_link_libraries(gtests "$<LINK_LIBRARY:WHOLE_ARCHIVE,gtests_src>" src_lib)
+target_link_libraries(gtests "$<LINK_LIBRARY:WHOLE_ARCHIVE,gtests_src>" VideoCompensation_lib)
 
 function(copy_directory_if_different SRC DEST)
     file(MAKE_DIRECTORY ${DEST})
