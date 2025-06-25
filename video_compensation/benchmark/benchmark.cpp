@@ -2,22 +2,28 @@
 #include <string>
 #include <iostream>
 #include <filesystem>
-#include "programmtest.h"
 
 #include "tests.h"
-#include "resources.h"
+#include "filereader.h"
 
-class BProgrammTest : public ProgrammTest
-{
-  public:
-    virtual void TestBody() override
-    {
+static void BM_old(benchmark::State& state) {
+  FileReader reader("/home/alex/workspace/projects/video_compensation/video_compensation/run/Good_dog.mp4");
 
-    }
-};
-
-static void BM_integration_main(benchmark::State& state) {
+  for (auto _ : state)
+    reader.readeNext();
 
 }
-static void BM_isReachable(benchmark::State& state) {
+
+BENCHMARK(BM_old);
+
+
+static void BM_new(benchmark::State& state) {
+  FileReader reader("/home/alex/workspace/projects/video_compensation/video_compensation/run/Good_dog.mp4");
+  
+  for (auto _ : state)
+    reader.readeNext();
 }
+
+BENCHMARK(BM_new);
+
+BENCHMARK_MAIN();
