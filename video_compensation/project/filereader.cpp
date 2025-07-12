@@ -15,8 +15,7 @@ FileReader::FileReader(const std::string &fullPath)
 
 FileReader::~FileReader()
 {
-    if (file_.is_open())
-      file_.close();
+    close();
 }
 
 void FileReader::open()
@@ -54,5 +53,3 @@ Frame FileReader::readeNext()
 
     return Frame(bufferY, bufferU, bufferV, index_++);
 }
-
-

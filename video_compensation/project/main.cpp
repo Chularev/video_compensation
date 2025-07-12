@@ -48,11 +48,9 @@ int main(int argc, char *argv[])
         FrameInfo::init(width, height);
 
         FileReader reader(params["-pathInput"]);
-        reader.open();
 
 
         FileWriter writer(params["-pathOutput"]);
-        writer.open();
 
 
         VideoCompensation handler;
@@ -68,13 +66,8 @@ int main(int argc, char *argv[])
             MotionVectorsMap vectorMap = handler.findMotionVectors(currentFrame,previousFrame);
             Frame result = handler.doCompensation(currentFrame,previousFrame,vectorMap);
             writer.writeFrame(result);
-            //cout << "   Frame number = " << result.index();
+            cout << "   Frame number = " << result.index() << endl;
         }
-
-
-        reader.close();
-        writer.close();
-
         cout << "All done" << endl;
     }
     catch (exception &exp)

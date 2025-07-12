@@ -13,10 +13,11 @@ public:
     explicit FileWriter(const std::string &fullPath);
     virtual ~FileWriter();
 
-    void open();
-    void close();
     void writeFrame(const Frame &frame);
 private:
+    void open();
+    void close();
+
     std::string filePath_;
     std::ofstream file_;
 };

@@ -13,11 +13,12 @@ public:
     explicit FileReader(const std::string &fullPath);
     virtual ~FileReader();
 
-    void open();
-    void close();
     bool eof() const;
     Frame readeNext();
 private:
+    void open();
+    void close();
+
     std::string filePath_;
     std::ifstream file_;
     int index_;

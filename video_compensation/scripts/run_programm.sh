@@ -1,3 +1,3 @@
 #!/bin/bash
 
-sudo perf stat -d /home/alex/workspace/projects/video_compensation/video_compensation/build/benchmark/benchmark --benchmark_filter=$1
+../project/VideoCompensation -pathInput ../data/input.yuv -w 1920 -h 1000 -pathOutput ../data/result.yuv

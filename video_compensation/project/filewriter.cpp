@@ -8,13 +8,12 @@ using namespace std;
 FileWriter::FileWriter(const std::string &fullPath)
  : filePath_(fullPath)
 {
-
+    open();
 }
 
 FileWriter::~FileWriter()
 {
-    if (file_.is_open())
-      file_.close();
+    close();
 }
 
 void FileWriter::open()
