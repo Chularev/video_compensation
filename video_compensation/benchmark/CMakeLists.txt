@@ -20,7 +20,7 @@ target_link_libraries(benchmark tests_lib VideoCompensation_lib)
 
 target_include_directories(benchmark PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}
-    "${CMAKE_SOURCE_DIR}/project"benchmark
+    "${CMAKE_SOURCE_DIR}/project"
     "${CMAKE_SOURCE_DIR}/unittests"
 )
 target_link_libraries(benchmark benchmark::benchmark)
