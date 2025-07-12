@@ -2,10 +2,7 @@ cmake_minimum_required(VERSION 3.5)
 
 project(tests LANGUAGES CXX)
 
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # Locate GTest
-
 find_package(GTest REQUIRED)
 include_directories(${GTEST_INCLUDE_DIRS})
 
@@ -13,9 +10,10 @@ include_directories(${GTEST_INCLUDE_DIRS})
 add_library(tests_lib STATIC
     tests.cpp
     tests.h)
+
 target_include_directories(tests_lib PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}
-    "${CMAKE_SOURCE_DIR}/src"
+    "${CMAKE_SOURCE_DIR}/project"
 )
 add_executable(tests main.cpp)
 
