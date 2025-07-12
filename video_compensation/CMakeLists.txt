@@ -22,4 +22,4 @@ add_custom_target(scripts_copy ALL
 
 add_subdirectory(project)
 add_subdirectory(unittests)
-add_subdirectory(benchmark)
+#add_subdirectory(benchmark)
