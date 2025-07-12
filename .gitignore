@@ -1,11 +1,6 @@
-test/output.yuv
-test/result
-test/result.mp4
 
 video_compensation/build/*
 video_compensation/.vscode/*
-video_compensation/run/output.yuv
-video_compensation/run/result
-video_compensation/run/result.mp4
+
 video_compensation/data/input.yuv
 video_compensation/CMakeLists.txt.user
