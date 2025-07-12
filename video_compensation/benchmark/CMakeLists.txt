@@ -16,7 +16,7 @@ find_package(GTest REQUIRED)
 include_directories(${GTEST_INCLUDE_DIRS})
 
 target_link_libraries(benchmark ${GTEST_LIBRARIES} pthread)
-target_link_libraries(benchmark gtests_lib VideoCompensation_lib)
+target_link_libraries(benchmark tests_lib VideoCompensation_lib)
 
 target_include_directories(benchmark PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}
