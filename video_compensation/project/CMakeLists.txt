@@ -12,6 +12,9 @@ add_library(VideoCompensation_lib STATIC
         videocompensation.cpp
 )
 
+target_include_directories(VideoCompensation_lib PUBLIC
+     ${CMAKE_CURRENT_SOURCE_DIR}
+)
 
 add_executable(VideoCompensation
     main.cpp 
@@ -20,7 +23,3 @@ add_executable(VideoCompensation
 target_link_libraries(
     VideoCompensation 
     VideoCompensation_lib)
-
-target_include_directories(${PROJECT_NAME}_lib PUBLIC
-    .
-)
