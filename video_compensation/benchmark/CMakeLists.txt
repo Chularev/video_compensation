@@ -2,12 +2,6 @@ cmake_minimum_required(VERSION 3.5)
 
 project(benchmark LANGUAGES CXX)
 
-<<<<<<< HEAD
-=======
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-
->>>>>>> 1dc40f8c89b88279b3820c0a0d223a268ffd213a
 # benchmark
 find_package(benchmark REQUIRED)
 
