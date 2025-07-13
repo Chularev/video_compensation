@@ -18,7 +18,12 @@ add_custom_target(scripts_copy ALL
         ${CMAKE_CURRENT_BINARY_DIR}/scripts
     COMMENT "Copying scripts folder to build directory"
 )
-
+add_custom_target(scripts_mainbenchmark_copy ALL
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+        ${CMAKE_CURRENT_SOURCE_DIR}/scripts/mainbenchmark
+        ${CMAKE_CURRENT_BINARY_DIR}/scripts/mainbenchmark
+    COMMENT "Copying mainbenchmark folder to build directory"
+)
 
 add_subdirectory(project)
 add_subdirectory(unittests)
