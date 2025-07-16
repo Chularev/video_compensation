@@ -1,3 +1,8 @@
 #!/bin/bash
 
-sudo perf stat -d /home/alex/workspace/projects/video_compensation/video_compensation/build/benchmark/benchmark --benchmark_filter=$1
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+cd "$SCRIPT_DIR" || exit
+
+
+sudo perf stat -d ../project/VideoCompensation -pathInput ../data/input.yuv -w 1920 -h 1000 -pathOutput ../data/result.yuv
