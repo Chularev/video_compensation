@@ -4,3 +4,4 @@ video_compensation/.vscode/*
 
 video_compensation/data/input.yuv
 video_compensation/CMakeLists.txt.user
+video_compensation/scripts/mainbenchmark/tmp_mainbenchmark.json
