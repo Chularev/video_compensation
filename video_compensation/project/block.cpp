@@ -13,23 +13,6 @@ Block::Block(int topLeftX, int topLeftY)
     matrix_ = vector<vector<Pixel>>(size, vector<Pixel>(size, Pixel()));
 }
 
-Block::Block(const Block &block)
-{
-    topLeftX_ = block.topLeftX();
-    topLeftY_ = block.topLeftY();
-    side_ = block.side();
-    matrix_ = block.matrix_;
-}
-
-Block &Block::operator=(const Block &block)
-{
-    topLeftX_ = block.topLeftX();
-    topLeftY_ = block.topLeftY();
-    side_ = block.side();
-    matrix_ = block.matrix_;
-    return *this;
-}
-
 int Block::side()
 {
     return side_;

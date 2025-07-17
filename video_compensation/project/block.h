@@ -8,8 +8,6 @@ class Block
 {
 public:
     Block(int topLeftX, int topLeftY);
-    Block(const Block &block);
-    Block &operator=(const Block &block);
 
     static int side();
 
